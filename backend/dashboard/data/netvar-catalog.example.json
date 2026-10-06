@@ -1,0 +1,27 @@
+{
+  "_comment": "SYNTHETIC EXAMPLE DATA - every entry below is invented for documentation and UI development. Do NOT treat these variable names, defaults, or ranges as real game data. To use real data, generate this file from YOUR OWN compatible game files (same JSON shape: generated_from metadata plus a modules array of {level, slot_key, vars:[{name,type,default,min,max}]}), save it as data/netvar-catalog.json, and rebuild.",
+  "generated_from": "SYNTHETIC EXAMPLE - not extracted from any game build",
+  "world": [
+    { "path": "config/exampleArenaName", "type": "string", "default": "Example Arena" },
+    { "path": "config/exampleMaxScore", "type": "number", "default": 10, "min": 1, "max": 99 }
+  ],
+  "modules": [
+    {
+      "level": "example_arena",
+      "slot_key": "example_gamemode_slot",
+      "vars": [
+        { "name": "config/ballSettings/exampleSpeedLimit", "type": "number", "default": 500, "min": 0, "max": 5000 },
+        { "name": "config/ballSettings/exampleCanHold", "type": "bool", "default": true },
+        { "name": "config/allowExampleVoip", "type": "bool", "default": false }
+      ]
+    },
+    {
+      "level": "example_lobby",
+      "slot_key": "example_social_slot",
+      "vars": [
+        { "name": "config/exampleWelcomeMessage", "type": "string", "default": "Welcome to Example Station" },
+        { "name": "config/exampleMaxPlayers", "type": "number", "default": 8, "min": 2, "max": 32 }
+      ]
+    }
+  ]
+}

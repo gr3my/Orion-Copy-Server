@@ -1,0 +1,75 @@
+@{
+    # =========================================================================
+    #  Orion Copy Server GAME SERVER config (Windows).
+    #  Copy to server.config.psd1 and edit. The backend may run on this same box
+    #  (install.ps1 pairs this file automatically) or on a remote host.
+    #
+    #  Everything deployment-specific is in ExtraArgs / the Dashboard* keys below.
+    #  These MUST match the backend's .env (ORION_SERVER_API_KEY especially).
+    #
+    #  You supply the game build + compatible payload DLL yourself; this repo
+    #  ships no game binaries. See docs/GAME-SERVERS.md.
+    # =========================================================================
+
+    # Client build this server runs. MUST equal the backend's ORION_BUILD_VERSION
+    # and the client build, or this station is filtered out of the browser.
+    GameBuild = '22284'
+
+    # Path to the game server exe, relative to this folder unless absolute.
+    GameExe = '.\game\A2\Binaries\Win64\A2-Win64-Shipping.exe'
+
+    Configuration = 'Release'
+
+    # Your compatible payload DLL, relative to this folder unless absolute.
+    DllPath = '.\OrionPayload.dll'
+
+    InitWaitSeconds     = 25
+    ReadyTimeoutSeconds = 120
+
+    Args = @(
+        '-nullrhi'        # headless: no renderer
+        '-nohmd'
+        '-nosound'
+        '-unattended'
+        '-nosplash'
+        '-log'
+    )
+
+    # ── Station dashboard — REQUIRED FOR IN-GAME QUESTS ──────────────────────
+    # The client's dashboard login stores an org id on the PlayerController; the
+    # payload needs that org to initialise quest state. Blank here => no quests.
+    # This is StationDb (default port 78), or its public https:// URL behind TLS.
+    DashboardApiUrl = 'https://orion.example.com'
+    DashboardApiKey = 'CHANGE_ME'   # = ORION_DASHBOARD_API_KEY in the backend .env
+    DeploymentId    = ''            # blank = backend mints one
+
+    # Public IP clients connect to. Blank = auto-detect.
+    # If detection fails the server REFUSES to register rather than publishing
+    # a wrong address — set this explicitly if your box has no outbound :80.
+    RegisterIp = ''
+
+    LoadGamemode = ''
+    GamemodeSlot = ''
+
+    ExtraArgs = @(
+        # ── Backend location ─────────────────────────────────────────────────
+        # Use the public hostnames (TLS, port 443) when the backend sits behind
+        # a reverse proxy, or 127.0.0.1 + service ports when both run on one box
+        # (install.ps1 pairs these to loopback automatically).
+        '-MothershipHost=YOUR_PUBLIC_HOSTNAME'   # login/auth + quest fetch
+        '-MothershipPort=443'
+        '-BackendHost=YOUR_PUBLIC_HOSTNAME'      # register_server + player-count
+        '-BackendPort=443'
+
+        # Station name in the browser (base; extra instances get _1, _2...).
+        '-ServerName=Orion'
+
+        # Shared secret. MUST equal ORION_SERVER_API_KEY in the backend .env.
+        # '-ServerApiKey=CHANGE_ME'
+
+        # ── TESTING ONLY — remove before any public run ──────────────────────
+        # '-NoAuthGate'    # auth gate logs only, never kicks
+    )
+
+    LogDir = 'logs'
+}

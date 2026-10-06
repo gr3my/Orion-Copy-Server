@@ -1,0 +1,16 @@
+# Cosmetic items every player is granted, so the wardrobe is not empty.
+# Copy this file next to the backend publish output as cosmetic_catalogue.txt
+# (MothershipServer reads it from the backend's run folder).
+# One item id per line; "#" starts a comment; "-<id>" removes an id. Re-read once a
+# minute, so an edit takes effect without a restart.
+#
+# FORMAT EXAMPLE (synthetic IDs -- replace with real item IDs from YOUR OWN
+# compatible game data; invented IDs below match nothing and grant nothing):
+#
+# EXAMPLE_COSMETIC_ITEM_ONE
+# EXAMPLE_COSMETIC_ITEM_TWO
+# -EXAMPLE_REMOVED_ITEM
+#
+# WHAT BELONGS HERE. Only ids the game really has. An invented id resolves to a
+# missing data asset on the client. The server also learns IDs it sees real clients
+# equip, so this file only needs to seed the shared base list.

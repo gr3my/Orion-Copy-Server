@@ -1,0 +1,22 @@
+[Unit]
+Description=Orion Copy Server backend (Mothership, StationDb, EOS gateway, dashboard)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# The installer writes these paths for you; adjust only for manual installs.
+User=orion-copy-server
+WorkingDirectory=/opt/orion-copy-server/backend
+# Generated from .env by install.sh (mode 600). Holds every ORION_* variable.
+EnvironmentFile=/opt/orion-copy-server/backend.env
+ExecStart=/usr/bin/dotnet /opt/orion-copy-server/backend/AUnrealFeatures.Ares.dll
+Restart=always
+RestartSec=3
+Environment=DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+# NEVER set these on a public server (dev/LAN only):
+# Environment=ORION_INSECURE=1
+# Environment=ORION_ALLOW_NONSTORE=1
+
+[Install]
+WantedBy=multi-user.target

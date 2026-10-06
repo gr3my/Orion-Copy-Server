@@ -1,0 +1,5 @@
+{
+    "_comment": "EOS session SEED, loaded at backend startup. It MUST stay empty in production: real game servers add themselves via POST /register_server.",
+    "count": 0,
+    "sessions": []
+}

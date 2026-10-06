@@ -1,0 +1,63 @@
+# Orion Copy Server — Caddy reverse proxy + automatic TLS.
+# install.sh writes this for you when ORION_DOMAIN is set; this file documents it.
+#
+# PREREQS: DNS A records for the three names below must point at the backend host
+# BEFORE Caddy first serves them, or Let's Encrypt issuance fails.
+#
+# NOTE: keep https://orion.<domain> at 26 characters or fewer INCLUDING "https://"
+# (e.g. https://orion.example.com is 25). The client patches the dashboard URL in
+# place inside its network library, so anything longer does not fit.
+
+orion-ms.YOUR_DOMAIN {
+	# Mothership: login/auth + quest fetch (backend :90)
+	reverse_proxy 127.0.0.1:90
+}
+
+orion.YOUR_DOMAIN {
+	# StationDb: stations/roles/deployments (backend :78) — the DashboardApiUrl target
+	#
+	# SPLIT-HOST MODEL: this public host serves GAME/CLIENT traffic only (reads,
+	# logins, deployment-config fetch). Server-control writes are blocked here and
+	# stay reachable only directly (firewall-scoped :78) or on a private host:
+	#   - POST /register_server          (creates stations/sessions)
+	#   - POST /server_heartbeat         (watchdog liveness)
+	#   - POST /update_player_count      (displayed counts)
+	#   - POST /stations/create          (creates stations)
+	#   - /v1/server/admin/*             (destructive admin)
+	#   - POST /v1/board/upload          (writes station assets)
+	# Remote game servers must use direct http(s)://<backend>:78 for the above
+	# (see ORION_EXPOSE_STATIONDB / ORION_STATIONDB_CIDR) or a private hostname.
+	# Do NOT remove these blocks without enabling ORION_REQUIRE_REGISTRATION_KEY.
+	#
+	# PROXY MARKER: Caddy dials StationDb over loopback, which would otherwise look
+	# "internal" to StationApiGuard. header_up stamps public traffic so the guard
+	# treats it as EXTERNAL (see StationApiGuard.cs). header_up overwrites any
+	# client-sent value, so direct clients cannot spoof it; the guard additionally
+	# honors the marker only on loopback sockets.
+	handle /register_server* { respond "Not Found" 404 }
+	handle /server_heartbeat* { respond "Not Found" 404 }
+	handle /update_player_count* { respond "Not Found" 404 }
+	handle /stations/create* { respond "Not Found" 404 }
+	handle /v1/server/admin/* { respond "Not Found" 404 }
+	handle /v1/board/upload* { respond "Not Found" 404 }
+	handle {
+		reverse_proxy 127.0.0.1:78 {
+			header_up X-Orion-Public-Proxy 1
+		}
+	}
+}
+
+orion-eos.YOUR_DOMAIN {
+	# EOS gateway: server list (backend :50).
+	# The SDK also opens websockets, which Caddy upgrades transparently.
+	reverse_proxy 127.0.0.1:50
+	# If lobby/RTC websockets need the :80 server, split by path prefix instead:
+	# @ws path /stomp* /rtc* /lobby*ws*
+	# reverse_proxy @ws 127.0.0.1:80
+}
+
+# Dashboard (after hardening, see docs/DASHBOARD.md). Keep :8080 closed in the
+# firewall either way — Caddy is the only public path in.
+# orion-dash.YOUR_DOMAIN {
+# 	reverse_proxy 127.0.0.1:8080
+# }

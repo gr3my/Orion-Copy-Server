@@ -1,0 +1,15 @@
+# Quests every player gets as COMPLETED. Copy this file next to the backend publish output
+# as auto_complete_quests.txt (MothershipServer reads it from the backend's run folder).
+# One "<quest id> [completedVersion]" per line. "#" starts a comment.
+# Applied whenever player_quests is fetched, so it reaches both the headset and the
+# game server; delete a line (or the file) to stop.
+#
+# FORMAT EXAMPLE (synthetic IDs -- replace with real quest IDs from YOUR OWN
+# compatible game data; invented IDs below match nothing and grant nothing):
+#
+# A1B2C3D4E5F60718293A4B5C6D7E8F90 1   # EXAMPLE_QUEST_ONE
+# B2C3D4E5F60718293A4B5C6D7E8F90A1 1   # EXAMPLE_QUEST_TWO
+#
+# How to find real IDs: inspect the quest bundle your own server sends to clients
+# (ids/versions/prerequisites come from that bundle). Only list IDs the game really
+# has -- an invented ID resolves to a missing data asset on the client.

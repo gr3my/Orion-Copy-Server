@@ -1,0 +1,37 @@
+# Secrets — never commit real configuration.
+.env
+.env.*
+!.env.example
+
+# Local operator config (copy of the example with real values).
+windows/server.config.psd1
+run/
+
+# .NET
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Node / Next.js
+node_modules/
+.next/
+
+# LiteDB data + logs
+*.db
+*.db.meta
+logs/
+*.log
+
+# Archives / temp
+*.zip
+*.rar
+*.7z
+*.tmp
+*.bak
+
+# Python / misc
+__pycache__/
+*.pyc
+tsconfig.tsbuildinfo
